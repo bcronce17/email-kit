@@ -1,0 +1,36 @@
+{
+  "name": "@bcronce/app-email",
+  "version": "0.1.0",
+  "description": "Shared server email client for SMTP, local capture, and memory tests",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=24"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "examples",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build && node --test tests/*.test.mjs",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "prepack": "npm run build",
+    "test:package": "node tests/packed-artifact.mjs"
+  },
+  "dependencies": {
+    "nodemailer": "10.0.10"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/nodemailer": "8.0.1",
+    "typescript": "^5.9.3"
+  }
+}
