@@ -1,9 +1,8 @@
 {
-  "name": "@bcronce/email-kit",
+  "name": "@bcronce17/email-kit",
   "version": "0.1.0",
   "description": "Shared server email client for SMTP, local capture, and memory tests",
   "type": "module",
-  "private": true,
   "engines": {
     "node": ">=24"
   },
@@ -51,5 +50,9 @@
     "mailpit",
     "nodemailer",
     "typescript"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
 }

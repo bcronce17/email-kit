@@ -8,11 +8,11 @@ GitHub hosts the source at https://github.com/bcronce17/email-kit. npmjs.com hos
 2. Run `npm login` in a terminal and complete the browser sign-in.
 3. Run `npm whoami` to confirm your npm username.
 
-Your personal package scope follows your npm username, which can differ from GitHub. The current name `@bcronce/email-kit` is provisional. If your npm username differs, update the name, examples/imports, and package validation before publishing. An organization scope requires permission to publish there.
+The package uses the confirmed personal scope `@bcronce17`: `@bcronce17/email-kit`. Authenticate as bcronce17 before publishing.
 
 ## Release preparation
 
-Keep `private: true` until the package name and first release are ready. For the approved release, remove that flag and add `publishConfig: { "access": "public", "registry": "https://registry.npmjs.org/" }` to package.json. Update the lockfile.
+Public publishing is configured through `publishConfig` with access public and the npmjs registry. The package is prepared as version 0.1.0; verify registry availability after the publish command succeeds.
 
 ```sh
 npm ci

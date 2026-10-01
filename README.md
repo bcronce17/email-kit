@@ -2,7 +2,7 @@
 
 A server-only TypeScript email client for Waiger, Keystone, and Gather. SMTP in production, Mailpit capture locally, and an isolated memory inbox in tests. No framework, database, worker, or provider account is required by the library.
 
-Requires Node 24+. Source: [bcronce17/email-kit](https://github.com/bcronce17/email-kit). Licensed under [MIT](LICENSE). Package name is provisionally `@bcronce/email-kit`; publishing remains disabled with `private: true` until the npm account/scope is confirmed.
+Requires Node 24+. Source: [bcronce17/email-kit](https://github.com/bcronce17/email-kit). Licensed under [MIT](LICENSE). Package name: `@bcronce17/email-kit`. Public npm distribution is configured; availability is confirmed separately from source releases.
 
 ## Install and develop
 
@@ -13,7 +13,7 @@ npm run test:package
 npm pack
 ```
 
-Install the resulting tarball in a consumer for local evaluation. Deployments should eventually install an immutable registry version with a committed lockfile. Do not deploy sibling-folder dependencies. `npm pack` includes compiled ESM, declarations, examples, and this README; it excludes tests, credentials, and source build tooling.
+Install a published release with `npm install --save-exact @bcronce17/email-kit@0.1.0`, or install the resulting tarball for local evaluation. Deployments should eventually install an immutable registry version with a committed lockfile. Do not deploy sibling-folder dependencies. `npm pack` includes compiled ESM, declarations, examples, and this README; it excludes tests, credentials, and source build tooling.
 
 ## Capture local email
 
@@ -26,7 +26,7 @@ Open http://localhost:8025. Mailpit captures messages without forwarding them. U
 Copy `examples/diagnostic.mjs` into a consumer and add `email:check` / `email:test` scripts invoking it with `check` / `test`. Configure `EMAIL_MODE`, `EMAIL_ENVIRONMENT`, `EMAIL_FROM`, `EMAIL_SMTP_HOST`, `EMAIL_SMTP_PORT`, and `EMAIL_SMTP_TLS`. Optional variables include `EMAIL_FROM_NAME`, SMTP credentials, `EMAIL_CAPTURE_HOSTS`, `EMAIL_RECIPIENT_ALLOWLIST`, and `EMAIL_TEST_TO`. Live diagnostic sends additionally require `--live` and an allowlist, including in production.
 
 ```ts
-import { createEmailClient } from '@bcronce/email-kit';
+import { createEmailClient } from '@bcronce17/email-kit';
 
 const email = createEmailClient({
   mode: 'capture', environment: 'development',
