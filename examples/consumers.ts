@@ -1,5 +1,5 @@
 // Copy these adapters into server-only application code. Read secrets in the app.
-import { createEmailClient, type EmailConfig, type Environment } from '@bcronce/app-email';
+import { createEmailClient, type EmailConfig, type Environment } from '@bcronce/email-kit';
 
 export function waigerEmail(smtp: {
   from: string; host: string; port: number; secure: boolean; user?: string; password?: string;

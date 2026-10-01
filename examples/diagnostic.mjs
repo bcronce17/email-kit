@@ -1,5 +1,5 @@
 // Run with explicit app environment configuration; this script never loads secrets itself.
-import { createEmailClient } from '@bcronce/app-email';
+import { createEmailClient } from '@bcronce/email-kit';
 
 const env = process.env;
 const mode = env.EMAIL_MODE;

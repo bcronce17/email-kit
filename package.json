@@ -1,5 +1,5 @@
 {
-  "name": "@bcronce/app-email",
+  "name": "@bcronce/email-kit",
   "version": "0.1.0",
   "description": "Shared server email client for SMTP, local capture, and memory tests",
   "type": "module",
@@ -17,7 +17,8 @@
     "dist",
     "examples",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "PUBLISHING.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -38,12 +39,12 @@
   "author": "bcronce17",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bcronce17/app-email.git"
+    "url": "git+https://github.com/bcronce17/email-kit.git"
   },
   "bugs": {
-    "url": "https://github.com/bcronce17/app-email/issues"
+    "url": "https://github.com/bcronce17/email-kit/issues"
   },
-  "homepage": "https://github.com/bcronce17/app-email#readme",
+  "homepage": "https://github.com/bcronce17/email-kit#readme",
   "keywords": [
     "email",
     "smtp",

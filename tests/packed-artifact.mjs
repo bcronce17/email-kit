@@ -1,18 +1,20 @@
-import { mkdtemp, writeFile, cp } from 'node:fs/promises';
+import { mkdtemp, writeFile, cp, readFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
-const consumer = await mkdtemp(join(tmpdir(), 'app-email-consumer-'));
+const metadata = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
+const archiveName = metadata.name.replace(/^@/, '').replaceAll('/', '-') + '-' + metadata.version + '.tgz';
+const consumer = await mkdtemp(join(tmpdir(), 'email-kit-consumer-'));
 const run = (command, args, cwd = consumer) => execFileSync(command, args, { cwd, stdio: 'inherit' });
 run('npm', ['pack'], root);
 await writeFile(join(consumer, 'package.json'), JSON.stringify({ private: true, type: 'module' }));
-run('npm', ['install', '--offline', '--ignore-scripts', resolve(root, 'bcronce-app-email-0.1.0.tgz')]);
+run('npm', ['install', '--offline', '--ignore-scripts', resolve(root, archiveName)]);
 await cp(join(root, 'examples/consumers.ts'), join(consumer, 'consumers.ts'));
 await writeFile(join(consumer, 'contract.ts'), `
-import { createEmailClient, type SendResult } from '@bcronce/app-email';
+import { createEmailClient, type SendResult } from '${metadata.name}';
 import { waigerEmail, accountEmail } from './consumers.js';
 const memory = createEmailClient({ mode: 'memory', environment: 'test', from: { address: 'sender@example.test' } });
 const result: SendResult = await memory.send({ to: 'recipient@example.test', subject: 'Test', text: 'Test' });
@@ -24,7 +26,7 @@ void result; void authCallback; void waigerEmail;
 run(process.execPath, [join(root, 'node_modules/typescript/bin/tsc'), '--strict', '--skipLibCheck', '--noEmit', '--target', 'ES2022', '--module', 'NodeNext', '--moduleResolution', 'NodeNext', 'contract.ts']);
 await writeFile(join(consumer, 'smoke.mjs'), `
 import assert from 'node:assert/strict';
-import { createEmailClient, EmailSendError } from '@bcronce/app-email';
+import { createEmailClient, EmailSendError } from '${metadata.name}';
 for (const name of ['Waiger', 'Keystone', 'Gather']) {
   const client = createEmailClient({ mode: 'memory', environment: 'test', from: { name, address: 'sender@example.test' } });
   const result = await client.send({ to: 'member@example.test', subject: name, text: 'Your verification link', messageId: '<caller@example.test>' });

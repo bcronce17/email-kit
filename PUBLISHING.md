@@ -1,6 +1,6 @@
 # First npm release
 
-GitHub hosts the source at https://github.com/bcronce17/app-email. npmjs.com hosts installable versions. Creating the GitHub repository does not publish an npm package.
+GitHub hosts the source at https://github.com/bcronce17/email-kit. npmjs.com hosts installable versions. Creating the GitHub repository does not publish an npm package.
 
 ## Account setup
 
@@ -8,7 +8,7 @@ GitHub hosts the source at https://github.com/bcronce17/app-email. npmjs.com hos
 2. Run `npm login` in a terminal and complete the browser sign-in.
 3. Run `npm whoami` to confirm your npm username.
 
-Your personal package scope follows your npm username, which can differ from GitHub. The current name `@bcronce/app-email` is provisional. If your npm username differs, update the name, examples/imports, and package validation before publishing. An organization scope requires permission to publish there.
+Your personal package scope follows your npm username, which can differ from GitHub. The current name `@bcronce/email-kit` is provisional. If your npm username differs, update the name, examples/imports, and package validation before publishing. An organization scope requires permission to publish there.
 
 ## Release preparation
 
