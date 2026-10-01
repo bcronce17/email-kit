@@ -1,0 +1,63 @@
+name: Publish email-kit
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: publish-email-kit
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://npm.pkg.github.com
+          scope: '@bcronce17'
+      - name: Check release ref
+        run: |
+          node --input-type=module -e '
+            import fs from "node:fs";
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            if (process.env.GITHUB_REF_TYPE === "tag") {
+              if (process.env.GITHUB_REF_NAME !== `v${pkg.version}`) throw Error("Tag must match package version");
+            } else if (process.env.GITHUB_REF_NAME !== "main") {
+              throw Error("Manual publication must use main");
+            }
+          '
+      - run: npm ci
+      - run: npm run check
+      - run: npm test
+      - run: npm run test:package
+      - name: Publish to GitHub Packages
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Verify registry install
+        run: |
+          node --input-type=module -e '
+            import fs from "node:fs";
+            import os from "node:os";
+            import path from "node:path";
+            import { execFileSync } from "node:child_process";
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "email-kit-registry-"));
+            fs.writeFileSync(path.join(cwd, "package.json"), JSON.stringify({ private: true, type: "module" }));
+            fs.writeFileSync(path.join(cwd, ".npmrc"), "@bcronce17:registry=https://npm.pkg.github.com\n");
+            execFileSync("npm", ["install", "--ignore-scripts", "--save-exact", `${pkg.name}@${pkg.version}`], { cwd, stdio: "inherit" });
+            fs.writeFileSync(path.join(cwd, "smoke.mjs"), `import { createEmailClient } from "${pkg.name}"; const client = createEmailClient({ mode: "memory", environment: "test", from: { address: "sender@example.test" } }); await client.send({ to: "member@example.test", subject: "Registry check", text: "Registry install passed" }); await client.close();`);
+            execFileSync(process.execPath, ["smoke.mjs"], { cwd, stdio: "inherit" });
+          '
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

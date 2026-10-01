@@ -2,7 +2,7 @@
 
 A server-only TypeScript email client for Waiger, Keystone, and Gather. SMTP in production, Mailpit capture locally, and an isolated memory inbox in tests. No framework, database, worker, or provider account is required by the library.
 
-Requires Node 24+. Source: [bcronce17/email-kit](https://github.com/bcronce17/email-kit). Licensed under [MIT](LICENSE). Package name: `@bcronce17/email-kit`. Public npm distribution is configured; availability is confirmed separately from source releases.
+Requires Node 24+. Source: [bcronce17/email-kit](https://github.com/bcronce17/email-kit). Licensed under [MIT](LICENSE). Package name: `@bcronce17/email-kit`. Distribution uses GitHub Packages with authenticated installs. See [PUBLISHING.md](PUBLISHING.md) for registry and token setup.
 
 ## Install and develop
 
@@ -13,7 +13,7 @@ npm run test:package
 npm pack
 ```
 
-Install a published release with `npm install --save-exact @bcronce17/email-kit@0.1.0`, or install the resulting tarball for local evaluation. Deployments should eventually install an immutable registry version with a committed lockfile. Do not deploy sibling-folder dependencies. `npm pack` includes compiled ESM, declarations, examples, and this README; it excludes tests, credentials, and source build tooling.
+Install a published release with `npm install --save-exact @bcronce17/email-kit@0.1.0`, or install the resulting tarball for local evaluation. Deployments install an exact GitHub Packages version with a committed lockfile and package-read credentials. Do not deploy sibling-folder dependencies. `npm pack` includes compiled ESM, declarations, examples, and this README; it excludes tests, credentials, and source build tooling.
 
 ## Capture local email
 
@@ -90,6 +90,6 @@ Library completion does not establish application milestone acceptance. Validate
 
 ## Validation and distribution
 
-`npm test` exercises real local SMTP acceptance, rejection, post-DATA disconnects, greeting timeout, required TLS failure, shutdown draining, memory isolation, validation, and allowlists. It sends no external email. `npm run test:package` installs the tarball in a clean temporary consumer, typechecks all three adapter contracts, and verifies ESM imports. CI runs both checks on Node 24. A release must additionally build consumer adapters and record application acceptance separately. The public source repository is hosted on GitHub; npm publishing is a separate step. See [PUBLISHING.md](PUBLISHING.md) for account setup and the first release.
+`npm test` exercises real local SMTP acceptance, rejection, post-DATA disconnects, greeting timeout, required TLS failure, shutdown draining, memory isolation, validation, and allowlists. It sends no external email. `npm run test:package` installs the tarball in a clean temporary consumer, typechecks all three adapter contracts, and verifies ESM imports. CI runs both checks on Node 24. A release must additionally build consumer adapters and record application acceptance separately. Source and package releases are hosted on GitHub. See [PUBLISHING.md](PUBLISHING.md) for releases, visibility, and authenticated consumer installs.
 
 SMTP configuration follows [Nodemailer's transport documentation](https://nodemailer.com/smtp). Mailpit inbox automation can use its [API](https://mailpit.axllent.org/docs/api-v1/); poll for a unique recipient/marker rather than deleting another developer's messages.
