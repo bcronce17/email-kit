@@ -11,7 +11,7 @@ const consumer = await mkdtemp(join(tmpdir(), 'email-kit-consumer-'));
 const run = (command, args, cwd = consumer) => execFileSync(command, args, { cwd, stdio: 'inherit' });
 run('npm', ['pack'], root);
 await writeFile(join(consumer, 'package.json'), JSON.stringify({ private: true, type: 'module' }));
-run('npm', ['install', '--offline', '--ignore-scripts', resolve(root, archiveName)]);
+run('npm', ['install', '--prefer-offline', '--ignore-scripts', resolve(root, archiveName)]);
 await cp(join(root, 'examples/consumers.ts'), join(consumer, 'consumers.ts'));
 await writeFile(join(consumer, 'contract.ts'), `
 import { createEmailClient, type SendResult } from '${metadata.name}';
