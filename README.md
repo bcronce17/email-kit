@@ -2,7 +2,7 @@
 
 A server-only TypeScript email client for Waiger, Keystone, and Gather. SMTP in production, Mailpit capture locally, and an isolated memory inbox in tests. No framework, database, worker, or provider account is required by the library.
 
-Requires Node 24+. Package name is provisionally `@bcronce/app-email`; publishing is disabled with `private: true` until registry/distribution is selected.
+Requires Node 24+. Source: [bcronce17/app-email](https://github.com/bcronce17/app-email). Licensed under [MIT](LICENSE). Package name is provisionally `@bcronce/app-email`; publishing remains disabled with `private: true` until the npm account/scope is confirmed.
 
 ## Install and develop
 
@@ -90,6 +90,6 @@ Library completion does not establish application milestone acceptance. Validate
 
 ## Validation and distribution
 
-`npm test` exercises real local SMTP acceptance, rejection, post-DATA disconnects, greeting timeout, required TLS failure, shutdown draining, memory isolation, validation, and allowlists. It sends no external email. `npm run test:package` installs the tarball in a clean temporary consumer, typechecks all three adapter contracts, and verifies ESM imports. CI runs both checks on Node 24. A release must additionally build consumer adapters and record application acceptance separately. Registry publishing and remote repository creation require the chosen account/visibility; this local repository does not assume them.
+`npm test` exercises real local SMTP acceptance, rejection, post-DATA disconnects, greeting timeout, required TLS failure, shutdown draining, memory isolation, validation, and allowlists. It sends no external email. `npm run test:package` installs the tarball in a clean temporary consumer, typechecks all three adapter contracts, and verifies ESM imports. CI runs both checks on Node 24. A release must additionally build consumer adapters and record application acceptance separately. The public source repository is hosted on GitHub; npm publishing is a separate step. See [PUBLISHING.md](PUBLISHING.md) for account setup and the first release.
 
 SMTP configuration follows [Nodemailer's transport documentation](https://nodemailer.com/smtp). Mailpit inbox automation can use its [API](https://mailpit.axllent.org/docs/api-v1/); poll for a unique recipient/marker rather than deleting another developer's messages.

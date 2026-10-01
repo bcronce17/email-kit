@@ -16,7 +16,8 @@
   "files": [
     "dist",
     "examples",
-    "README.md"
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -32,5 +33,22 @@
     "@types/node": "^24.0.0",
     "@types/nodemailer": "8.0.1",
     "typescript": "^5.9.3"
-  }
+  },
+  "license": "MIT",
+  "author": "bcronce17",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bcronce17/app-email.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bcronce17/app-email/issues"
+  },
+  "homepage": "https://github.com/bcronce17/app-email#readme",
+  "keywords": [
+    "email",
+    "smtp",
+    "mailpit",
+    "nodemailer",
+    "typescript"
+  ]
 }
