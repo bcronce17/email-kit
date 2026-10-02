@@ -2,6 +2,11 @@ name: Publish email-kit
 
 on:
   workflow_dispatch:
+    inputs:
+      verify_only:
+        description: Verify an already published version without publishing again
+        type: boolean
+        default: false
   push:
     tags:
       - 'v*'
@@ -43,19 +48,7 @@ jobs:
       - run: npm test
       - run: npm run test:package
       - name: Publish to public npm
+        if: ${{ github.event_name != 'workflow_dispatch' || !inputs.verify_only }}
         run: npm publish --access public
-      - name: Verify registry install
-        run: |
-          node --input-type=module -e '
-            import fs from "node:fs";
-            import os from "node:os";
-            import path from "node:path";
-            import { execFileSync } from "node:child_process";
-            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-            const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "email-kit-registry-"));
-            fs.writeFileSync(path.join(cwd, "package.json"), JSON.stringify({ private: true, type: "module" }));
-            fs.writeFileSync(path.join(cwd, ".npmrc"), "@brim-software:registry=https://registry.npmjs.org\n");
-            execFileSync("npm", ["install", "--ignore-scripts", "--save-exact", `${pkg.name}@${pkg.version}`], { cwd, stdio: "inherit" });
-            fs.writeFileSync(path.join(cwd, "smoke.mjs"), `import { createEmailClient } from "${pkg.name}"; const client = createEmailClient({ mode: "memory", environment: "test", from: { address: "sender@example.test" } }); await client.send({ to: "member@example.test", subject: "Registry check", text: "Registry install passed" }); await client.close();`);
-            execFileSync(process.execPath, ["smoke.mjs"], { cwd, stdio: "inherit" });
-          '
+      - name: Verify anonymous registry install
+        run: node scripts/verify-registry.mjs
