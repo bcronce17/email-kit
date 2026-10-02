@@ -2,7 +2,7 @@
 
 A server-only TypeScript email client for Waiger, Keystone, and Gather. SMTP in production, Mailpit capture locally, and an isolated memory inbox in tests. No framework, database, worker, or provider account is required by the library.
 
-Requires Node 24+. Source: [bcronce17/email-kit](https://github.com/bcronce17/email-kit). Licensed under [MIT](LICENSE). Package name: `@bcronce17/email-kit`. Distribution uses GitHub Packages with authenticated installs. See [PUBLISHING.md](PUBLISHING.md) for registry and token setup.
+Requires Node 24+. Source: [brim-software/email-kit](https://github.com/brim-software/email-kit). Licensed under [MIT](LICENSE). Package name: `@brim-software/email-kit`. Public npm distribution is being prepared. See [PUBLISHING.md](PUBLISHING.md) for release setup and status.
 
 ## Install and develop
 
@@ -13,7 +13,7 @@ npm run test:package
 npm pack
 ```
 
-Install a published release with `npm install --save-exact @bcronce17/email-kit@0.1.0`, or install the resulting tarball for local evaluation. Deployments install an exact GitHub Packages version with a committed lockfile and package-read credentials. Do not deploy sibling-folder dependencies. `npm pack` includes compiled ESM, declarations, examples, and this README; it excludes tests, credentials, and source build tooling.
+Install a published release with `npm install --save-exact @brim-software/email-kit@0.1.0`, or install the resulting tarball for local evaluation. After publication, deployments install an exact public npm version with a committed lockfile. Developers and build systems need no registry accounts or tokens. Do not deploy sibling-folder dependencies. `npm pack` includes compiled ESM, declarations, examples, and this README; it excludes tests, credentials, and source build tooling.
 
 ## Capture local email
 
@@ -26,7 +26,7 @@ Open http://localhost:8025. Mailpit captures messages without forwarding them. U
 Copy `examples/diagnostic.mjs` into a consumer and add `email:check` / `email:test` scripts invoking it with `check` / `test`. Configure `EMAIL_MODE`, `EMAIL_ENVIRONMENT`, `EMAIL_FROM`, `EMAIL_SMTP_HOST`, `EMAIL_SMTP_PORT`, and `EMAIL_SMTP_TLS`. Optional variables include `EMAIL_FROM_NAME`, SMTP credentials, `EMAIL_CAPTURE_HOSTS`, `EMAIL_RECIPIENT_ALLOWLIST`, and `EMAIL_TEST_TO`. Live diagnostic sends additionally require `--live` and an allowlist, including in production.
 
 ```ts
-import { createEmailClient } from '@bcronce17/email-kit';
+import { createEmailClient } from '@brim-software/email-kit';
 
 const email = createEmailClient({
   mode: 'capture', environment: 'development',

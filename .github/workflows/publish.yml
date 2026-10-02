@@ -8,7 +8,7 @@ on:
 
 permissions:
   contents: read
-  packages: write
+  id-token: write
 
 concurrency:
   group: publish-email-kit
@@ -23,8 +23,8 @@ jobs:
         with:
           node-version: 24
           cache: npm
-          registry-url: https://npm.pkg.github.com
-          scope: '@bcronce17'
+          registry-url: https://registry.npmjs.org
+          scope: '@brim-software'
       - name: Check release ref
         run: |
           node --input-type=module -e '
@@ -36,14 +36,14 @@ jobs:
               throw Error("Manual publication must use main");
             }
           '
+      - name: Install npm with trusted publishing support
+        run: npm install --global npm@11
       - run: npm ci
       - run: npm run check
       - run: npm test
       - run: npm run test:package
-      - name: Publish to GitHub Packages
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to public npm
+        run: npm publish --access public
       - name: Verify registry install
         run: |
           node --input-type=module -e '
@@ -54,10 +54,8 @@ jobs:
             const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
             const cwd = fs.mkdtempSync(path.join(os.tmpdir(), "email-kit-registry-"));
             fs.writeFileSync(path.join(cwd, "package.json"), JSON.stringify({ private: true, type: "module" }));
-            fs.writeFileSync(path.join(cwd, ".npmrc"), "@bcronce17:registry=https://npm.pkg.github.com\n");
+            fs.writeFileSync(path.join(cwd, ".npmrc"), "@brim-software:registry=https://registry.npmjs.org\n");
             execFileSync("npm", ["install", "--ignore-scripts", "--save-exact", `${pkg.name}@${pkg.version}`], { cwd, stdio: "inherit" });
             fs.writeFileSync(path.join(cwd, "smoke.mjs"), `import { createEmailClient } from "${pkg.name}"; const client = createEmailClient({ mode: "memory", environment: "test", from: { address: "sender@example.test" } }); await client.send({ to: "member@example.test", subject: "Registry check", text: "Registry install passed" }); await client.close();`);
             execFileSync(process.execPath, ["smoke.mjs"], { cwd, stdio: "inherit" });
           '
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

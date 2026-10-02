@@ -1,5 +1,5 @@
 {
-  "name": "@bcronce17/email-kit",
+  "name": "@brim-software/email-kit",
   "version": "0.1.0",
   "description": "Shared server email client for SMTP, local capture, and memory tests",
   "type": "module",
@@ -38,12 +38,12 @@
   "author": "bcronce17",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bcronce17/email-kit.git"
+    "url": "git+https://github.com/brim-software/email-kit.git"
   },
   "bugs": {
-    "url": "https://github.com/bcronce17/email-kit/issues"
+    "url": "https://github.com/brim-software/email-kit/issues"
   },
-  "homepage": "https://github.com/bcronce17/email-kit#readme",
+  "homepage": "https://github.com/brim-software/email-kit#readme",
   "keywords": [
     "email",
     "smtp",
@@ -52,6 +52,7 @@
     "typescript"
   ],
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
   }
 }
