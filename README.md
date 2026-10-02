@@ -93,3 +93,19 @@ Library completion does not establish application milestone acceptance. Validate
 `npm test` exercises real local SMTP acceptance, rejection, post-DATA disconnects, greeting timeout, required TLS failure, shutdown draining, memory isolation, validation, and allowlists. It sends no external email. `npm run test:package` installs the tarball in a clean temporary consumer, typechecks all three adapter contracts, and verifies ESM imports. CI runs both checks on Node 24. A release must additionally build consumer adapters and record application acceptance separately. Source is hosted on GitHub; package releases are published to public npm. See [PUBLISHING.md](PUBLISHING.md) for releases and installation without registry credentials.
 
 SMTP configuration follows [Nodemailer's transport documentation](https://nodemailer.com/smtp). Mailpit inbox automation can use its [API](https://mailpit.axllent.org/docs/api-v1/); poll for a unique recipient/marker rather than deleting another developer's messages.
+
+## Optional branded templates
+
+Import pure renderers from `@brim-software/email-kit/templates`. These return `{ subject, text, html }` for sending with any email client. No rendering framework or network request is needed.
+
+```ts
+import { renderVerificationEmail } from '@brim-software/email-kit/templates';
+const message = renderVerificationEmail({
+  brand: { name: 'Your app', accentColor: '#2563eb' },
+  actionUrl: verificationUrl,
+  expirationText: 'This verification link will expire in 24 hours.',
+});
+await email.send({ to: recipient, ...message });
+```
+
+Use `renderPasswordResetEmail` for recovery or `renderActionEmail` for custom invitations and other action messages. Copy is escaped, action URLs require HTTP(S) without credentials, and accent colors require six-digit hex values. Callers must authorize link origins and supply truthful expiry wording; rendering does not create or validate tokens. The layout uses inline styles, presentation tables, a fallback URL, and plain text. Actual email-client rendering acceptance remains separate from browser preview.
