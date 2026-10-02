@@ -1,8 +1,8 @@
 # email-kit
 
-A server-only TypeScript email client for Waiger, Keystone, and Gather. SMTP in production, Mailpit capture locally, and an isolated memory inbox in tests. No framework, database, worker, or provider account is required by the library.
+A server-only TypeScript email client for Node.js applications. SMTP in production, Mailpit capture locally, and an isolated memory inbox in tests. No framework, database, worker, or provider account is required by the library.
 
-Requires Node 24+. Source: [brim-software/email-kit](https://github.com/brim-software/email-kit). Licensed under [MIT](LICENSE). Package name: `@brim-software/email-kit`. Version 0.1.0 is published on public npm. See [PUBLISHING.md](PUBLISHING.md) for release setup and status.
+Requires Node 24+. Source: [brim-software/email-kit](https://github.com/brim-software/email-kit). Licensed under [MIT](LICENSE). Package name: `@brim-software/email-kit`. The template API requires version 0.2.0 or later. See [PUBLISHING.md](PUBLISHING.md) for release setup and status.
 
 ## Install and develop
 
@@ -13,7 +13,7 @@ npm run test:package
 npm pack
 ```
 
-Install a published release with `npm install --save-exact @brim-software/email-kit@0.1.0`, or install the resulting tarball for local evaluation. Deployments install an exact public npm version with a committed lockfile. Developers and build systems need no registry accounts or tokens. Do not deploy sibling-folder dependencies. `npm pack` includes compiled ESM, declarations, examples, and this README; it excludes tests, credentials, and source build tooling.
+Install a published release with `npm install --save-exact @brim-software/email-kit@0.2.0`, or install the resulting tarball for local evaluation. Deployments install an exact public npm version with a committed lockfile. Developers and build systems need no registry accounts or tokens. Do not deploy sibling-folder dependencies. `npm pack` includes compiled ESM, declarations, examples, and this README; it excludes tests, credentials, and source build tooling.
 
 ## Capture local email
 
@@ -96,16 +96,6 @@ SMTP configuration follows [Nodemailer's transport documentation](https://nodema
 
 ## Optional branded templates
 
-Import pure renderers from `@brim-software/email-kit/templates`. These return `{ subject, text, html }` for sending with any email client. No rendering framework or network request is needed.
+The source now includes reusable verification, password reset, organization/project/portal invitation, announcement, official notice, notification, and custom action templates. Each returns matching HTML and plain text, with configurable branding and copy. Apps supply approved URLs and enforce token expiry and authorization. Templates are available from version 0.2.0.
 
-```ts
-import { renderVerificationEmail } from '@brim-software/email-kit/templates';
-const message = renderVerificationEmail({
-  brand: { name: 'Your app', accentColor: '#2563eb' },
-  actionUrl: verificationUrl,
-  expirationText: 'This verification link will expire in 24 hours.',
-});
-await email.send({ to: recipient, ...message });
-```
-
-Use `renderPasswordResetEmail` for recovery or `renderActionEmail` for custom invitations and other action messages. Copy is escaped, action URLs require HTTP(S) without credentials, and accent colors require six-digit hex values. Callers must authorize link origins and supply truthful expiry wording; rendering does not create or validate tokens. The layout uses inline styles, presentation tables, a fallback URL, and plain text. Actual email-client rendering acceptance remains separate from browser preview.
+See [TEMPLATES.md](TEMPLATES.md) for the full API, security boundaries, consumer options, and preview instructions. Run `npm run preview:templates` to generate the local gallery before release.

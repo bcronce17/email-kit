@@ -21,14 +21,16 @@
     "examples",
     "README.md",
     "LICENSE",
-    "PUBLISHING.md"
+    "PUBLISHING.md",
+    "TEMPLATES.md"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "npm run build && node --test tests/*.test.mjs",
     "check": "tsc -p tsconfig.json --noEmit",
     "prepack": "npm run build",
-    "test:package": "node tests/packed-artifact.mjs"
+    "test:package": "node tests/packed-artifact.mjs",
+    "preview:templates": "npm run build && node examples/template-previews.mjs"
   },
   "dependencies": {
     "nodemailer": "10.0.10"
