@@ -6,18 +6,18 @@ Each renderer returns `{ subject, text, html }`. Render independently of the ema
 
 ## Template catalog
 
-| Renderer | Purpose | Required content beyond brand and action URL |
-| --- | --- | --- |
-| `renderVerificationEmail` | Account email verification and resend | `expirationText` |
-| `renderPasswordResetEmail` | Requested password recovery | `expirationText` |
-| `renderInvitationEmail` | Generic invitation | `resourceName`, `expirationText`; optional `inviterName` |
-| `renderOrganizationInvitationEmail` | Company/team membership invitation | `organizationName`, `expirationText`; optional `inviterName` |
-| `renderProjectInvitationEmail` | Project access invitation | `organizationName`, `projectName`, `expirationText`; optional `inviterName` |
-| `renderPortalInvitationEmail` | Community/resident portal invitation | `communityName`, `expirationText` |
-| `renderAnnouncementEmail` | Community content with a protected portal link | `senderName`, `title`, plain-text `body`; optional `preferencesUrl` |
-| `renderOfficialNoticeEmail` | Same layout with official-notice classification | Same as announcement; classification does not establish legal delivery |
-| `renderNotificationEmail` | Task/activity updates | `subject`, `heading`, `summary`; optional `context`, `details`, `actionLabel`, `preferencesUrl` |
-| `renderActionEmail` | Custom action message | `subject`, `heading`, `introduction`, `actionLabel`, `expirationText`, `securityText` |
+| Renderer                            | Purpose                                         | Required content beyond brand and action URL                                                    |
+| ----------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `renderVerificationEmail`           | Account email verification and resend           | `expirationText`                                                                                |
+| `renderPasswordResetEmail`          | Requested password recovery                     | `expirationText`                                                                                |
+| `renderInvitationEmail`             | Generic invitation                              | `resourceName`, `expirationText`; optional `inviterName`                                        |
+| `renderOrganizationInvitationEmail` | Company/team membership invitation              | `organizationName`, `expirationText`; optional `inviterName`                                    |
+| `renderProjectInvitationEmail`      | Project access invitation                       | `organizationName`, `projectName`, `expirationText`; optional `inviterName`                     |
+| `renderPortalInvitationEmail`       | Community/resident portal invitation            | `communityName`, `expirationText`                                                               |
+| `renderAnnouncementEmail`           | Community content with a protected portal link  | `senderName`, `title`, plain-text `body`; optional `preferencesUrl`                             |
+| `renderOfficialNoticeEmail`         | Same layout with official-notice classification | Same as announcement; classification does not establish legal delivery                          |
+| `renderNotificationEmail`           | Task/activity updates                           | `subject`, `heading`, `summary`; optional `context`, `details`, `actionLabel`, `preferencesUrl` |
+| `renderActionEmail`                 | Custom action message                           | `subject`, `heading`, `introduction`, `actionLabel`, `expirationText`, `securityText`           |
 
 Subjects can be overridden on every renderer. Notifications cover task assignment, submission, changes requested, approval, help requested, and declined tasks through app-supplied wording. Renderers do not infer event recipients or trigger sends.
 
@@ -31,7 +31,7 @@ const message = renderVerificationEmail({
     name: 'Your app',
     accentColor: '#abd03f',
     tagline: 'A useful place to get things done.',
-    footerText: 'Sent by Your app.',
+    footerText: 'Sent by Your app.'
   },
   actionUrl: verificationUrl, // Created by the application/auth provider.
   expirationText: 'This verification link will expire in 24 hours.',
@@ -41,8 +41,8 @@ const message = renderVerificationEmail({
     heading: 'Welcome aboard',
     introduction: 'Confirm your email to finish setting up your account.',
     actionLabel: 'Confirm Email',
-    preheader: 'One quick step to finish setting up your account.',
-  },
+    preheader: 'One quick step to finish setting up your account.'
+  }
 });
 await email.send({ to: recipient, ...message });
 ```

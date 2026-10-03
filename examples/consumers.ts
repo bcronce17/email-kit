@@ -1,24 +1,39 @@
 // Copy these adapters into server-only application code. Read secrets in the app.
 import { createEmailClient, type EmailConfig, type Environment } from '@brim-software/email-kit';
 
-export function waigerEmail(smtp: {
-  from: string; host: string; port: number; secure: boolean; user?: string; password?: string;
-}, environment: Environment, mode: 'capture' | 'live', recipientAllowlist?: string[]) {
+type WaigerSmtpSettings = {
+  from: string;
+  host: string;
+  port: number;
+  secure: boolean;
+  user?: string;
+  password?: string;
+};
+
+export function waigerEmail(
+  smtp: WaigerSmtpSettings,
+  environment: Environment,
+  mode: 'capture' | 'live',
+  recipientAllowlist?: string[]
+) {
   return createEmailClient({
-    environment, mode,
+    environment,
+    mode,
     from: { name: 'Waiger', address: smtp.from },
     smtp: {
-      host: smtp.host, port: smtp.port,
+      host: smtp.host,
+      port: smtp.port,
       tls: mode === 'capture' ? 'none' : smtp.secure ? 'implicit' : 'starttls',
-      ...(smtp.user ? { auth: { user: smtp.user, pass: smtp.password ?? '' } } : {}),
+      ...(smtp.user ? { auth: { user: smtp.user, pass: smtp.password ?? '' } } : {})
     },
-    ...(mode === 'live' && recipientAllowlist ? { recipientAllowlist } : {}),
+    ...(mode === 'live' && recipientAllowlist ? { recipientAllowlist } : {})
   });
 }
 
-// Keystone and Gather can both create one lazy singleton from explicit app config.
+// Create one adapter per server instance from explicit app config.
 export function accountEmail(config: EmailConfig) {
   const email = createEmailClient(config);
+
   return {
     email,
     // Compatible with Better Auth's async sendVerificationEmail/sendResetPassword callbacks.
@@ -28,6 +43,6 @@ export function accountEmail(config: EmailConfig) {
     // Gather retains its worker, claim fencing, message content, and error classification.
     sendAnnouncement(to: string, subject: string, text: string, html: string, messageId: string) {
       return email.send({ to, subject, text, html, messageId });
-    },
+    }
   };
 }

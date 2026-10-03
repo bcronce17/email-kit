@@ -1,38 +1,76 @@
 // Run with explicit app environment configuration; this script never loads secrets itself.
 import { createEmailClient } from '@brim-software/email-kit';
 
-const env = process.env;
-const mode = env.EMAIL_MODE;
-const email = createEmailClient({
-  mode,
-  environment: env.EMAIL_ENVIRONMENT,
-  from: { name: env.EMAIL_FROM_NAME || 'Email diagnostic', address: env.EMAIL_FROM },
-  ...(mode === 'memory' ? {} : {
-    smtp: {
-      host: env.EMAIL_SMTP_HOST,
-      port: Number(env.EMAIL_SMTP_PORT),
-      tls: env.EMAIL_SMTP_TLS,
-      ...(env.EMAIL_SMTP_USER || env.EMAIL_SMTP_PASSWORD ? {
-        auth: { user: env.EMAIL_SMTP_USER, pass: env.EMAIL_SMTP_PASSWORD },
-      } : {}),
-    },
-  }),
-  ...(mode === 'capture' && env.EMAIL_CAPTURE_HOSTS ? { captureHosts: env.EMAIL_CAPTURE_HOSTS.split(',') } : {}),
-  ...(mode === 'live' && env.EMAIL_RECIPIENT_ALLOWLIST ? { recipientAllowlist: env.EMAIL_RECIPIENT_ALLOWLIST.split(',') } : {}),
-});
+function readConfiguration(environment) {
+  const mode = environment.EMAIL_MODE;
+  const config = {
+    mode,
+    environment: environment.EMAIL_ENVIRONMENT,
+    from: {
+      name: environment.EMAIL_FROM_NAME || 'Email diagnostic',
+      address: environment.EMAIL_FROM
+    }
+  };
+
+  if (mode !== 'memory') {
+    config.smtp = {
+      host: environment.EMAIL_SMTP_HOST,
+      port: Number(environment.EMAIL_SMTP_PORT),
+      tls: environment.EMAIL_SMTP_TLS
+    };
+
+    if (environment.EMAIL_SMTP_USER || environment.EMAIL_SMTP_PASSWORD) {
+      config.smtp.auth = { user: environment.EMAIL_SMTP_USER, pass: environment.EMAIL_SMTP_PASSWORD };
+    }
+  }
+
+  if (mode === 'capture' && environment.EMAIL_CAPTURE_HOSTS) {
+    config.captureHosts = environment.EMAIL_CAPTURE_HOSTS.split(',');
+  }
+
+  if (mode === 'live' && environment.EMAIL_RECIPIENT_ALLOWLIST) {
+    config.recipientAllowlist = environment.EMAIL_RECIPIENT_ALLOWLIST.split(',');
+  }
+
+  return config;
+}
+
+function requireLiveSendOptIn(environment) {
+  if (environment.EMAIL_MODE !== 'live') {
+    return;
+  }
+
+  if (process.argv[3] !== '--live') {
+    throw new Error('Live test requires explicit --live');
+  }
+
+  if (!environment.EMAIL_RECIPIENT_ALLOWLIST) {
+    throw new Error('Live diagnostic requires an allowlist');
+  }
+}
+
+const environment = process.env;
+const email = createEmailClient(readConfiguration(environment));
 
 try {
   const action = process.argv[2] || 'check';
+
   if (action === 'check') {
     await email.verify();
     console.log('Email configuration and transport check passed');
   } else if (action === 'test') {
-    if (mode === 'live' && process.argv[3] !== '--live') throw new Error('Live test requires explicit --live');
-    if (mode === 'live' && !env.EMAIL_RECIPIENT_ALLOWLIST) throw new Error('Live diagnostic requires an allowlist');
+    requireLiveSendOptIn(environment);
+
     await email.send({
-      to: env.EMAIL_TEST_TO || 'diagnostic@example.test',
-      subject: 'Email diagnostic', text: 'The shared email client sent this diagnostic message.',
+      to: environment.EMAIL_TEST_TO || 'diagnostic@example.test',
+      subject: 'Email diagnostic',
+      text: 'The shared email client sent this diagnostic message.'
     });
+
     console.log('Email diagnostic accepted by transport');
-  } else throw new Error('Expected check or test');
-} finally { await email.close(); }
+  } else {
+    throw new Error('Expected check or test');
+  }
+} finally {
+  await email.close();
+}

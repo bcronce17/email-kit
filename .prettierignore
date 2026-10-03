@@ -1,10 +1,6 @@
-node_modules/
 dist/
-*.tgz
-.env
-
-.previews/
-
 coverage/
 playwright-report/
 test-results/
+.previews/
+package-lock.json

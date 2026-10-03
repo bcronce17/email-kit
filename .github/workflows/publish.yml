@@ -22,6 +22,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,22 +32,26 @@ jobs:
           registry-url: https://registry.npmjs.org
           scope: '@brim-software'
       - name: Check release ref
-        run: |
-          node --input-type=module -e '
-            import fs from "node:fs";
-            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
-            if (process.env.GITHUB_REF_TYPE === "tag") {
-              if (process.env.GITHUB_REF_NAME !== `v${pkg.version}`) throw Error("Tag must match package version");
-            } else if (process.env.GITHUB_REF_NAME !== "main") {
-              throw Error("Manual publication must use main");
-            }
-          '
+        run: node scripts/check-release-ref.mjs
       - name: Install npm with trusted publishing support
         run: npm install --global npm@11
       - run: npm ci
+      - name: Lint and check formatting
+        run: npm run lint
       - run: npm run check
-      - run: npm test
-      - run: npm run test:package
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run all test layers
+        run: npm test
+      - name: Upload browser failure reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: email-kit-release-browser-failures
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
       - name: Publish to public npm
         if: ${{ github.event_name != 'workflow_dispatch' || !inputs.verify_only }}
         run: npm publish --access public

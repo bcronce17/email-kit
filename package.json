@@ -22,23 +22,41 @@
     "README.md",
     "LICENSE",
     "PUBLISHING.md",
-    "TEMPLATES.md"
+    "TEMPLATES.md",
+    "docs"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && node --test tests/*.test.mjs",
     "check": "tsc -p tsconfig.json --noEmit",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "lint": "eslint . --max-warnings=0 && prettier . --check",
+    "lint:fix": "eslint . --fix && prettier --write --list-different .",
     "prepack": "npm run build",
+    "preview:templates": "npm run build && node examples/template-previews.mjs",
+    "test": "npm run test:unit && npm run test:integration && npm run test:e2e && npm run test:package",
+    "test:coverage": "vitest run --project unit --project integration --coverage",
+    "test:e2e": "npm run build && playwright test",
+    "test:integration": "vitest run --project integration",
     "test:package": "node tests/packed-artifact.mjs",
-    "preview:templates": "npm run build && node examples/template-previews.mjs"
+    "test:unit": "vitest run --project unit"
   },
   "dependencies": {
     "nodemailer": "10.0.10"
   },
   "devDependencies": {
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.63.0",
     "@types/node": "^24.0.0",
     "@types/nodemailer": "8.0.1",
-    "typescript": "^5.9.3"
+    "@vitest/coverage-v8": "4.1.11",
+    "eslint": "10.12.0",
+    "eslint-config-prettier": "10.1.8",
+    "globals": "17.13.0",
+    "prettier": "3.3.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "8.71.0",
+    "vitest": "4.1.11"
   },
   "license": "MIT",
   "author": "bcronce17",
