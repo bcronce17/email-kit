@@ -67,6 +67,52 @@ configure its host and port. Loopback hosts are approved by default; use
 Capture credentials require TLS. The npm preview and library tests need no
 capture server.
 
+### Mailpit without Docker
+
+Install Mailpit using its [official installation guide](https://mailpit.axllent.org/docs/install/).
+On macOS, `brew install mailpit` is an option. Linux/macOS/Windows users can
+extract the appropriate standalone binary from the linked releases and put
+`mailpit` (`mailpit.exe` on Windows) on `PATH`. Check `mailpit --version`.
+
+Start it in a separate terminal:
+
+```sh
+mailpit --smtp 127.0.0.1:1025 --listen 127.0.0.1:8025
+```
+
+Open [localhost:8025](http://localhost:8025) and use the capture client example
+above. The process runs in the foreground; Ctrl+C stops it. Loopback bindings
+follow [Mailpit's runtime options](https://mailpit.axllent.org/docs/configuration/runtime-options/).
+Use a plain local installation without relay or forwarding configuration.
+Do not run native and Docker Mailpit on the same ports.
+
+For another inbox, change both flags and match the client SMTP port:
+
+```sh
+mailpit --smtp 127.0.0.1:1030 --listen 127.0.0.1:8030
+```
+
+Set `smtp.port: 1030` and open `http://localhost:8030`. Direct Mailpit invocation
+and the core email-kit library do not load your application's `.env`.
+`EMAIL_SMTP_PORT`/`EMAIL_UI_PORT` in the Compose example configure Docker's host
+mappings; they do not automatically configure this native command.
+
+If your application prefers an npm command, add this to its `package.json`:
+
+```json
+{
+  "scripts": {
+    "mailpit:start": "mailpit --smtp 127.0.0.1:1025 --listen 127.0.0.1:8025"
+  }
+}
+```
+
+Then run `npm run mailpit:start`. This is an optional consuming-app script, not a
+script already defined in email-kit. It requires the installed native binary;
+npm does not install Mailpit. For development that needs no inbox UI, use memory
+mode. Template previews and every email-kit test layer work without Docker or
+Mailpit; integration tests start their own disposable SMTP fixture.
+
 ## Configure production SMTP
 
 Read credentials from your application's secret configuration, then supply:

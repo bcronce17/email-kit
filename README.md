@@ -81,6 +81,18 @@ file. Open [localhost:8025](http://localhost:8025). Configure your application f
 The [capture how-to](docs/USAGE.md#capture-email-locally) includes a configuration
 example, port overrides, shutdown, and using an existing capture server.
 
+**Without Docker:** install the [standalone Mailpit binary](https://mailpit.axllent.org/docs/install/),
+put it on `PATH`, and run:
+
+```sh
+mailpit --smtp 127.0.0.1:1025 --listen 127.0.0.1:8025
+```
+
+Use the same capture configuration above. See the
+[native Mailpit how-to](docs/USAGE.md#mailpit-without-docker) for installation,
+custom ports, and an optional consuming-app npm command. Memory mode, previews,
+and all library tests already run without Docker or an installed Mailpit server.
+
 ## Guides and developer exercises
 
 | Goal                                                                         | Guide                                                    |
